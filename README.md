@@ -71,31 +71,26 @@ This file contains structured instructions for implementing AutoML tasks program
 
 ---
 
-## Setup with uv
-
-This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
+## Workflow
 
 ```bash
-# Install uv (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Create virtual environment and install core dependencies
+# 1 — install dependencies
 uv sync
 
-# Install PyCaret (optional, large install)
-uv sync --extra pycaret
+# 2 — run all experiments (saves to results/)
+uv run python run_experiments.py
+uv run python run_experiments.py --no-tpot   # faster, skips TPOT
 
-# Install Auto-sklearn (Linux/macOS only, requires swig)
-uv sync --extra autosklearn
-
-# Install visualization extras (Plotly/Kaleido for Optuna plots)
-uv sync --extra viz
-
-# Run a script
-uv run python 05_implementation_example.py
-
-# Open Jupyter (after uv sync --group dev)
-uv run jupyter notebook
+# 3 — open notebooks
+uv run marimo edit notebooks/01_eda.py       # EDA
+uv run marimo edit notebooks/02_results.py  # Results & HPO visualizations
 ```
 
-> **Note**: `auto-sklearn` requires Linux or macOS with `swig` (`sudo apt install swig`). On Windows, use PyCaret or Optuna instead.
+Optional extras:
+```bash
+uv sync --extra tpot        # TPOT genetic pipeline search
+uv sync --extra pycaret     # PyCaret low-code AutoML
+uv sync --extra viz         # Plotly + Kaleido for extra Optuna plots
+```
+
+> **Note on auto-sklearn**: requires Linux/macOS + `swig` (`sudo apt install swig`). Not supported on Python 3.13 yet — use PyCaret or Optuna instead.
